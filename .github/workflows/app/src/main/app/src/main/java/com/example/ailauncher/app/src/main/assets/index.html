@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin: 0; background: #0f1115; color: #fff; font-family: sans-serif; }
+  #wrap { padding: 12px; }
+  #q { width: 100%; box-sizing: border-box; padding: 12px 16px; border: 0;
+       border-radius: 24px; background: #222831; color: #fff; font-size: 16px; }
+  #grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 4px; margin-top: 16px; }
+  .app { text-align: center; font-size: 12px; }
+  .app img { width: 52px; height: 52px; }
+  .app div { margin-top: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <input id="q" placeholder="Поиск приложений">
+  <div id="grid"></div>
+</div>
+<script>
+let apps = [];
+
+function render() {
+  const f = document.getElementById('q').value.toLowerCase();
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  apps.filter(a => a.name.toLowerCase().includes(f)).forEach(a => {
+    const d = document.createElement('div');
+    d.className = 'app';
+    d.innerHTML = '<img src="data:image/png;base64,' + a.icon + '"><div></div>';
+    d.querySelector('div').textContent = a.name;
+    d.onclick = () => Android.launch(a.pkg);
+    g.appendChild(d);
+  });
+}
+
+document.getElementById('q').addEventListener('input', render);
+apps = JSON.parse(Android.getApps());
+render();
+</script>
+</body>
+</html>
